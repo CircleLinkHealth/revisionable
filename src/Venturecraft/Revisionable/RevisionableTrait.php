@@ -103,14 +103,14 @@ trait RevisionableTrait
     public static function classRevisionHistory($limit = 100, $order = 'desc')
     {
         return \Venturecraft\Revisionable\Revision::where('revisionable_type', get_called_class())
-            ->orderBy('updated_at', $order)->limit($limit)->get();
+                                                  ->orderBy('updated_at', $order)->limit($limit)->get();
     }
 
     /**
-    * Invoked before a model is saved. Return false to abort the operation.
-    *
-    * @return bool
-    */
+     * Invoked before a model is saved. Return false to abort the operation.
+     *
+     * @return bool
+     */
     public function preSave()
     {
         if (!isset($this->revisionEnabled) || $this->revisionEnabled) {
@@ -182,6 +182,7 @@ trait RevisionableTrait
                     'old_value' => array_get($this->originalData, $key),
                     'new_value' => $this->updatedData[$key],
                     'user_id' => $this->getSystemUserId(),
+                    'ip' => $this->getUserIpAddress(),
                     'created_at' => new \DateTime(),
                     'updated_at' => new \DateTime(),
                 );
@@ -202,8 +203,8 @@ trait RevisionableTrait
     }
 
     /**
-    * Called after record successfully created
-    */
+     * Called after record successfully created
+     */
     public function postCreate()
     {
 
@@ -224,6 +225,7 @@ trait RevisionableTrait
                 'old_value' => null,
                 'new_value' => $this->{self::CREATED_AT},
                 'user_id' => $this->getSystemUserId(),
+                'ip' => $this->getUserIpAddress(),
                 'created_at' => new \DateTime(),
                 'updated_at' => new \DateTime(),
             );
@@ -233,6 +235,15 @@ trait RevisionableTrait
             \Event::fire('revisionable.created', array('model' => $this, 'revisions' => $revisions));
         }
 
+    }
+
+    /**
+     * Get the IP of the User who initiated the revision.
+     *
+     * @return string|null
+     */
+    public function getUserIpAddress() {
+        return \Request::getClientIp();
     }
 
     /**
