@@ -20,6 +20,8 @@ class Revision extends Eloquent
      */
     public $table = 'revisions';
 
+    public $guarded = [];
+
     /**
      * @var array
      */
