@@ -90,7 +90,7 @@ trait RevisionableTrait
      */
     public function revisionHistory()
     {
-        return $this->morphMany('\Venturecraft\Revisionable\Revision', 'revisionable');
+        return $this->morphMany(get_class(Revisionable::newModel()), 'revisionable');
     }
 
     /**
@@ -103,8 +103,9 @@ trait RevisionableTrait
      */
     public static function classRevisionHistory($limit = 100, $order = 'desc')
     {
-        return \Venturecraft\Revisionable\Revision::where('revisionable_type', get_called_class())
-                                                  ->orderBy('updated_at', $order)->limit($limit)->get();
+        $model = Revisionable::newModel();
+        return $model->where('revisionable_type', get_called_class())
+            ->orderBy('updated_at', $order)->limit($limit)->get();
     }
 
     /**
@@ -196,7 +197,10 @@ trait RevisionableTrait
                         $delete->delete();
                     }
                 }
-                \Event::fire('revisionable.saved', ['model' => $this, 'revisions' => $revisions]);
+
+                $revision = Revisionable::newModel();
+                \DB::table($revision->getTable())->insert($revisions);
+                \Event::dispatch('revisionable.saved', array('model' => $this, 'revisions' => $revisions));
             }
         }
     }
@@ -217,17 +221,19 @@ trait RevisionableTrait
         if (( ! isset($this->revisionEnabled) || $this->revisionEnabled)) {
             $args = [
                 'revisionable_type' => $this->getMorphClass(),
-                'revisionable_id'   => $this->getKey(),
-                'key'               => self::CREATED_AT,
-                'old_value'         => null,
-                'new_value'         => $this->{self::CREATED_AT},
-                'user_id'           => $this->getSystemUserId(),
+                'revisionable_id' => $this->getKey(),
+                'key' => self::CREATED_AT,
+                'old_value' => null,
+                'new_value' => $this->{self::CREATED_AT},
+                'user_id' => $this->getSystemUserId(),
                 'ip'                => $this->getUserIpAddress(),
-            ];
+                'created_at' => new \DateTime(),
+                'updated_at' => new \DateTime(),
+            );
 
-            $revision = Revision::create($args);
-
-            \Event::fire('revisionable.created', ['model' => $this, 'revisions' => [$revision]]);
+            $revision = Revisionable::newModel();
+            \DB::table($revision->getTable())->insert($revisions);
+            \Event::dispatch('revisionable.created', array('model' => $this, 'revisions' => $revisions));
         }
 
     }
@@ -253,17 +259,17 @@ trait RevisionableTrait
         ) {
             $revisions[] = [
                 'revisionable_type' => $this->getMorphClass(),
-                'revisionable_id'   => $this->getKey(),
-                'key'               => $this->getDeletedAtColumn(),
-                'old_value'         => null,
-                'new_value'         => $this->{$this->getDeletedAtColumn()},
-                'user_id'           => $this->getSystemUserId(),
-                'created_at'        => new \DateTime(),
-                'updated_at'        => new \DateTime(),
-            ];
-            $revision    = new \Venturecraft\Revisionable\Revision;
+                'revisionable_id' => $this->getKey(),
+                'key' => $this->getDeletedAtColumn(),
+                'old_value' => null,
+                'new_value' => $this->{$this->getDeletedAtColumn()},
+                'user_id' => $this->getSystemUserId(),
+                'created_at' => new \DateTime(),
+                'updated_at' => new \DateTime(),
+            );
+            $revision = Revisionable::newModel();
             \DB::table($revision->getTable())->insert($revisions);
-            \Event::fire('revisionable.deleted', ['model' => $this, 'revisions' => $revisions]);
+            \Event::dispatch('revisionable.deleted', array('model' => $this, 'revisions' => $revisions));
         }
     }
 
@@ -303,8 +309,10 @@ trait RevisionableTrait
         foreach ($this->dirtyData as $key => $value) {
             // check that the field is revisionable, and double check
             // that it's actually new data in case dirty is, well, clean
-            if ($this->isRevisionable($key) && ! is_array($value)) {
-                if ( ! isset($this->originalData[$key]) || $this->originalData[$key] != $this->updatedData[$key]) {
+            
+            if ($this->isRevisionable($key) && !is_array($value)) {
+                if (!array_key_exists($key, $this->originalData) || $this->originalData[$key] != $this->updatedData[$key]) {
+
                     $changes_to_record[$key] = $value;
                 }
             } else {
