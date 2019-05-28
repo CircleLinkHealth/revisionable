@@ -195,6 +195,16 @@ trait RevisionableTrait
     }
 
     /**
+     * Get the IP of the User who initiated the revision.
+     *
+     * @return string|null
+     */
+    public function getUserIpAddress()
+    {
+        return \Request::getClientIp();
+    }
+
+    /**
      * Identifiable Name
      * When displaying revision history, when a foreign key is updated
      * instead of displaying the ID, you can choose to display a string
@@ -432,14 +442,5 @@ trait RevisionableTrait
         }
 
         return false;
-    }
-    
-    /**
-     * Get the IP of the User who initiated the revision.
-     *
-     * @return string|null
-     */
-    public function getUserIpAddress() {
-        return \Request::getClientIp();
     }
 }
