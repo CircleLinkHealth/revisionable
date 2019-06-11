@@ -1,5 +1,9 @@
 <?php
 
+/*
+ * This file is part of CarePlan Manager by CircleLink Health.
+ */
+
 namespace Venturecraft\Revisionable;
 
 /**
@@ -11,11 +15,50 @@ namespace Venturecraft\Revisionable;
  */
 
 /**
- * Class FieldFormatter
- * @package Venturecraft\Revisionable
+ * Class FieldFormatter.
  */
 class FieldFormatter
 {
+    /**
+     * Boolean.
+     *
+     * @param       $value
+     * @param array $options The false / true values to return
+     *
+     * @return string Formatted version of the boolean field
+     */
+    public static function boolean($value, $options = null)
+    {
+        if ( ! is_null($options)) {
+            $options = explode('|', $options);
+        }
+
+        if (2 != sizeof($options)) {
+            $options = ['No', 'Yes'];
+        }
+
+        return $options[(bool) $value];
+    }
+
+    /**
+     * Format the datetime.
+     *
+     * @param string $value
+     * @param string $format
+     *
+     * @return formatted datetime
+     */
+    public static function datetime($value, $format = 'Y-m-d H:i:s')
+    {
+        if (empty($value)) {
+            return null;
+        }
+
+        $datetime = new \DateTime($value);
+
+        return $datetime->format($format);
+    }
+
     /**
      * Format the value according to the provided formats.
      *
@@ -29,7 +72,7 @@ class FieldFormatter
     {
         foreach ($formats as $pkey => $format) {
             $parts = explode(':', $format);
-            if (sizeof($parts) === 1) {
+            if (1 === sizeof($parts)) {
                 continue;
             }
 
@@ -54,32 +97,11 @@ class FieldFormatter
      *
      * @return string
      */
-    public static function isEmpty($value, $options = array())
+    public static function isEmpty($value, $options = [])
     {
-        $value_set = isset($value) && $value != '';
+        $value_set = isset($value) && '' != $value;
 
         return sprintf(self::boolean($value_set, $options), $value);
-    }
-
-    /**
-     * Boolean.
-     *
-     * @param       $value
-     * @param array $options The false / true values to return
-     *
-     * @return string Formatted version of the boolean field
-     */
-    public static function boolean($value, $options = null)
-    {
-        if (!is_null($options)) {
-            $options = explode('|', $options);
-        }
-
-        if (sizeof($options) != 2) {
-            $options = array('No', 'Yes');
-        }
-
-        return $options[!!$value];
     }
 
     /**
@@ -97,24 +119,5 @@ class FieldFormatter
         }
 
         return sprintf($format, $value);
-    }
-    
-    /**
-     * Format the datetime
-     *
-     * @param string $value
-     * @param string $format
-     *
-     * @return formatted datetime
-     */
-    public static function datetime($value, $format = 'Y-m-d H:i:s')
-    {
-        if (empty($value)) {
-            return null;    
-        }
-        
-        $datetime = new \DateTime($value);
-
-        return $datetime->format($format);
     }
 }
