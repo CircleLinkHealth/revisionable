@@ -10,11 +10,39 @@ use Illuminate\Database\Eloquent\Model as Eloquent;
 
 /**
  * Revision.
- *
+ * 
  * Base model to allow for revision history on
  * any model that extends this model
- *
+ * 
  * (c) Venture Craft <http://www.venturecraft.com.au>
+ *
+ * @property int $id
+ * @property string $revisionable_type
+ * @property int $revisionable_id
+ * @property int|null $user_id
+ * @property string $key
+ * @property string|null $old_value
+ * @property string|null $new_value
+ * @property string|null $ip
+ * @property int $is_phi
+ * @property \Illuminate\Support\Carbon|null $created_at
+ * @property \Illuminate\Support\Carbon|null $updated_at
+ * @property-read \Illuminate\Database\Eloquent\Model|\Eloquent $revisionable
+ * @method static \Illuminate\Database\Eloquent\Builder|\Venturecraft\Revisionable\Revision newModelQuery()
+ * @method static \Illuminate\Database\Eloquent\Builder|\Venturecraft\Revisionable\Revision newQuery()
+ * @method static \Illuminate\Database\Eloquent\Builder|\Venturecraft\Revisionable\Revision query()
+ * @method static \Illuminate\Database\Eloquent\Builder|\Venturecraft\Revisionable\Revision whereCreatedAt($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|\Venturecraft\Revisionable\Revision whereId($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|\Venturecraft\Revisionable\Revision whereIp($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|\Venturecraft\Revisionable\Revision whereIsPhi($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|\Venturecraft\Revisionable\Revision whereKey($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|\Venturecraft\Revisionable\Revision whereNewValue($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|\Venturecraft\Revisionable\Revision whereOldValue($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|\Venturecraft\Revisionable\Revision whereRevisionableId($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|\Venturecraft\Revisionable\Revision whereRevisionableType($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|\Venturecraft\Revisionable\Revision whereUpdatedAt($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|\Venturecraft\Revisionable\Revision whereUserId($value)
+ * @mixin \Eloquent
  */
 class Revision extends Eloquent
 {

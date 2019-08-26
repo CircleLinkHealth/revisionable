@@ -17,6 +17,12 @@ use Illuminate\Database\Eloquent\Model as Eloquent;
 
 /**
  * Class Revisionable.
+ *
+ * @property-read \Illuminate\Database\Eloquent\Collection|\Venturecraft\Revisionable\Revision[] $revisionHistory
+ * @method static \Illuminate\Database\Eloquent\Builder|\Venturecraft\Revisionable\Revisionable newModelQuery()
+ * @method static \Illuminate\Database\Eloquent\Builder|\Venturecraft\Revisionable\Revisionable newQuery()
+ * @method static \Illuminate\Database\Eloquent\Builder|\Venturecraft\Revisionable\Revisionable query()
+ * @mixin \Eloquent
  */
 class Revisionable extends Eloquent
 {
