@@ -82,6 +82,7 @@ use Venturecraft\Revisionable\RevisionableTrait;
  * @method static \Illuminate\Database\Eloquent\Builder|\Venturecraft\Revisionable\Tests\Models\User whereUsername($value)
  * @method static \Illuminate\Database\Eloquent\Builder|\Venturecraft\Revisionable\Tests\Models\User whereZip($value)
  * @mixin \Eloquent
+ * @property-read int|null $revision_history_count
  */
 class User extends Model
 {

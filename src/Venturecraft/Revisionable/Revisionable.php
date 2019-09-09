@@ -23,6 +23,7 @@ use Illuminate\Database\Eloquent\Model as Eloquent;
  * @method static \Illuminate\Database\Eloquent\Builder|\Venturecraft\Revisionable\Revisionable newQuery()
  * @method static \Illuminate\Database\Eloquent\Builder|\Venturecraft\Revisionable\Revisionable query()
  * @mixin \Eloquent
+ * @property-read int|null $revision_history_count
  */
 class Revisionable extends Eloquent
 {
