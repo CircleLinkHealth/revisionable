@@ -8,7 +8,7 @@ namespace Venturecraft\Revisionable;
 
 use Illuminate\Support\ServiceProvider;
 
-class RevisionableServiceProvider extends ServiceProvider
+class RevisionableServceProvider extends ServiceProvider
 {
     /**
      * Bootstrap the application services.
@@ -31,6 +31,7 @@ class RevisionableServiceProvider extends ServiceProvider
      */
     public function provides()
     {
+        return [];
     }
 
     /**
@@ -38,5 +39,6 @@ class RevisionableServiceProvider extends ServiceProvider
      */
     public function register()
     {
+        //
     }
 }
