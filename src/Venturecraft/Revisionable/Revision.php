@@ -46,7 +46,12 @@ use Illuminate\Database\Eloquent\Model as Eloquent;
  */
 class Revision extends Eloquent
 {
-    protected $connection = "remote";
+    /**
+     * Use Medstack DB until we migrate this table.
+     *
+     * @var string
+     */
+    protected $connection = 'remote';
 
     public $guarded = [];
     /**
