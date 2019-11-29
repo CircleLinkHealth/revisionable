@@ -46,6 +46,8 @@ use Illuminate\Database\Eloquent\Model as Eloquent;
  */
 class Revision extends Eloquent
 {
+    protected $connection = "remote";
+
     public $guarded = [];
     /**
      * @var string
